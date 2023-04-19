@@ -56,6 +56,7 @@ def load_tweets(
                 or tweet.is_quoted
                 or tweet.is_reply
                 or tweet.is_possibly_sensitive
+                or keyword not in tweet.text
             ):
                 total_ignored += 1
                 continue
