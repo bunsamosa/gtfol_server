@@ -37,7 +37,7 @@ databases = Databases(appwrite)
 
 # scrape data
 load_tweets(
-    keyword="@_buildspace",
+    keyword="@_nightsweekends",
     search_filter=None,
     db=databases,
     context=context,

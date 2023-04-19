@@ -1,3 +1,5 @@
+import time
+
 from appwrite.services.databases import Databases
 from tweety.bot import Twitter
 
@@ -106,13 +108,13 @@ def load_tweets(
 
         # get next page of results
         # retry if error fetching next page
-        data_fetched = False
+        results = False
         retries = 0
-        while not data_fetched:
+        while not results:
+            print(f"Fetching next page, retries: {retries}")
             try:
                 results = results_cursor.get_next_page()
+                retries += 1
+                time.sleep(5)
             except Exception:
                 print(f"Error fetching next page, retrying...{retries}")
-                retries += 1
-            else:
-                data_fetched = True
