@@ -1,0 +1,3 @@
+setup:
+  project: tweet-loader
+  config: dev

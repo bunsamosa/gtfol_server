@@ -1,6 +1,6 @@
 from appwrite.services.databases import Databases
 
-from dbsetup.attribute_builder import create_attribute
+from utils.attribute_builder import create_attribute
 
 TWEETS_CID = "tweets"
 TWEETS_ATTRIBUTES = {
@@ -132,13 +132,12 @@ def setup_collection(db: Databases, context: dict) -> None:
     # create collection
     db.create_collection(
         database_id=context["database_id"],
-        collection_id=TWEETS_CID,
-        name=TWEETS_CID,
+        collection_id=context["collection_id"],
+        name=context["collection_name"],
         document_security=False,
     )
 
     # create attributes
-    context["collection_id"] = TWEETS_CID
     for attribute, metadata in TWEETS_ATTRIBUTES.items():
         create_attribute(
             attribute=attribute,

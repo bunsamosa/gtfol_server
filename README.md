@@ -1,2 +1,2 @@
-# twitter_scraper
-Twitter scraper for GTFOL
+# Tweet loader
+Tweet loader for GTFOL
