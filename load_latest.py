@@ -4,7 +4,7 @@ from appwrite.client import Client
 from appwrite.services.databases import Databases
 from tweety import filters
 
-from tweet_loader import load_tweets
+from core.tweet_loader import load_tweets
 
 # read environment variables
 appwrite_endpoint = os.getenv("APPWRITE_ENDPOINT")

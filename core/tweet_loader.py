@@ -4,6 +4,7 @@ from appwrite.services.databases import Databases
 from tweety.bot import Twitter
 
 from dbsetup import tweets
+from utils import docbuilder
 from utils.prep_data import prep_tweet_data
 
 
@@ -28,6 +29,7 @@ def load_tweets(
     total_errors = 0
     total_inserted = 0
     total_ignored = 0
+    total_updated = 0
     page_number = 0
 
     # setup collection
@@ -63,30 +65,36 @@ def load_tweets(
                 total_ignored += 1
                 continue
 
+            # create a document if it doesn't exist, otherwise update it
             try:
-                db.create_document(
-                    database_id=context["database_id"],
-                    collection_id=context["collection_id"],
-                    document_id=tweet.id,
+                document_exists = docbuilder.create_document(
+                    db=db,
                     data=upload_data,
+                    document_id=tweet.id,
+                    context=context,
                 )
-            except Exception as e:
-                # don't count duplicate tweets as errors
-                if "requested ID already exists" in str(e):
-                    total_ignored += 1
+                if document_exists:
+                    docbuilder.update_document(
+                        db=db,
+                        data=upload_data,
+                        document_id=tweet.id,
+                        context=context,
+                    )
+                    total_updated += 1
                 else:
-                    total_errors += 1
-                    print("------------------------------------------------")
-                    print(upload_data)
-                    print(e)
-                    print("------------------------------------------------")
-            else:
-                total_inserted += 1
+                    total_inserted += 1
+            except Exception as e:
+                total_errors += 1
+                print("------------------------------------------------")
+                print(upload_data)
+                print(e)
+                print("------------------------------------------------")
 
         print("------------------------------------------------")
         print(f"Page {page_number} scraped.")
         print(f"Total scraped: {total_scraped}")
         print(f"Total inserted: {total_inserted}")
+        print(f"Total updated: {total_updated}")
         print(f"Total ignored: {total_ignored}")
         print(f"Total errors: {total_errors}")
         print(f"Do we have next page: {results_cursor.is_next_page}")
@@ -113,8 +121,8 @@ def load_tweets(
         while not results:
             print(f"Fetching next page, retries: {retries}")
             try:
-                results = results_cursor.get_next_page()
                 retries += 1
                 time.sleep(5)
+                results = results_cursor.get_next_page()
             except Exception:
                 print(f"Error fetching next page, retrying...{retries}")

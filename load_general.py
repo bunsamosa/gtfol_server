@@ -2,8 +2,9 @@ import os
 
 from appwrite.client import Client
 from appwrite.services.databases import Databases
+from tweety import filters
 
-from tweet_loader import load_tweets
+from core.tweet_loader import load_tweets
 
 # read environment variables
 appwrite_endpoint = os.getenv("APPWRITE_ENDPOINT")
@@ -37,8 +38,8 @@ databases = Databases(appwrite)
 
 # scrape data
 load_tweets(
-    keyword="@_nightsweekends",
-    search_filter=None,
+    keyword="@_buildspace",
+    search_filter=filters.SearchFilters().Latest(),
     db=databases,
     context=context,
     max_tweets=1000000,
