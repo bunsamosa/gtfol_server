@@ -42,5 +42,14 @@ load_tweets(
     search_filter=filters.SearchFilters.Latest(),
     db=databases,
     context=context,
-    max_tweets=1000,
+    max_tweets=500,
+)
+
+# scrape data
+load_tweets(
+    keyword="@_nightsweekends",
+    search_filter=filters.SearchFilters.Latest(),
+    db=databases,
+    context=context,
+    max_tweets=500,
 )
