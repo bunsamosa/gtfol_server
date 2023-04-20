@@ -38,7 +38,7 @@ context = {
 databases = Databases(appwrite)
 
 # setup logging
-log_file_path = os.path.join(os.getcwd(), "log_latest.log")
+log_file_path = os.path.join(os.getcwd(), "logs", "log_latest.log")
 logging.basicConfig(
     filename=log_file_path,
     filemode="w",
