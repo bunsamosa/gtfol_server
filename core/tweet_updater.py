@@ -104,7 +104,8 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
             )
 
             # exponential backoff
-            time_sleep *= 2
+            if time_sleep < 300:
+                time_sleep += 10
 
         logging.info(f"Updated {len(results['documents'])} tweets...")
         logging.info("------------------------------------------------")

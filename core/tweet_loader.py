@@ -124,13 +124,13 @@ def load_tweets(
         time_sleep = 5
         while not results:
             logging.info(f"Fetching next page, retries: {retries}")
+            logging.info(f"Wait time: {time_sleep} seconds")
             try:
                 retries += 1
                 time.sleep(time_sleep)
                 results = results_cursor.get_next_page()
             except Exception:
-                logging.info(
-                    f"Error fetching, retrying in {time_sleep} seconds...",
-                )
-                if exponential_backoff:
-                    time_sleep *= 2
+                logging.info("Error while fetching data from next page")
+
+            if exponential_backoff and time_sleep < 300:
+                time_sleep += 10
