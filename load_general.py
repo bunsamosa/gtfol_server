@@ -42,5 +42,6 @@ load_tweets(
     search_filter=filters.SearchFilters().Latest(),
     db=databases,
     context=context,
+    exponential_backoff=True,
     max_tweets=1000000,
 )
