@@ -1,3 +1,4 @@
+import logging
 import os
 
 from appwrite.client import Client
@@ -35,6 +36,16 @@ context = {
     "collection_name": "tweets",
 }
 databases = Databases(appwrite)
+
+# setup logging
+log_file_path = os.path.join(os.getcwd(), "log_general.log")
+logging.basicConfig(
+    filename=log_file_path,
+    filemode="w",
+    format="%(asctime)s - %(message)s",
+    datefmt="%d-%b-%y %H:%M:%S",
+    level=logging.INFO,
+)
 
 # scrape data
 load_tweets(

@@ -1,3 +1,4 @@
+import logging
 import time
 
 from appwrite.query import Query
@@ -20,12 +21,12 @@ def update_data(app, db: Databases, results: list, context: dict) -> int:
         tweet_id = row["$id"]
 
         # fetch tweet data
-        print(f"Fetching tweet {tweet_id}...")
+        logging.info(f"Fetching tweet {tweet_id}...")
         try:
             tweet = app.tweet_detail(tweet_id)
             upload_data = prep_tweet_data(tweet)
         except Exception:
-            print(f"Error fetching tweet {tweet_id}...")
+            logging.info(f"Error fetching tweet {tweet_id}...")
             err_count += 1
             continue
         else:
@@ -39,7 +40,7 @@ def update_data(app, db: Databases, results: list, context: dict) -> int:
             document_id=tweet.id,
             context=context,
         )
-        print(f"Updated tweet {tweet_id}...")
+        logging.info(f"Updated tweet {tweet_id}...")
     return err_count
 
 
@@ -50,8 +51,8 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
     :param context: context dictionary
     :param max_tweets: max number of tweets to update
     """
-    print("Starting tweet updater...")
-    print("------------------------------------------------")
+    logging.info("Starting tweet updater...")
+    logging.info("------------------------------------------------")
     offset = 0
     limit = 20
 
@@ -61,7 +62,7 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
     app = Twitter()
     # fetch and update tweets
     while offset <= max_tweets:
-        print(f"Updating tweets {offset} to {offset + limit}...")
+        logging.info(f"Updating tweets {offset} to {offset + limit}...")
 
         # fetch results from database
         results = db.list_documents(
@@ -75,7 +76,7 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
         )
         results_len = len(results["documents"])
         if results_len == 0:
-            print("No more tweets to update...")
+            logging.info("No more tweets to update...")
             break
 
         # update tweet data
@@ -89,7 +90,9 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
         # retry if too many errors
         time_sleep = 5
         while err_count > 5:
-            print(f"Too many errors {err_count}, Retrying in {time_sleep}...")
+            logging.info(
+                f"Too many errors {err_count}, Retrying in {time_sleep}...",
+            )
             time.sleep(time_sleep)
 
             app = Twitter()
@@ -103,8 +106,8 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
             # exponential backoff
             time_sleep *= 2
 
-        print(f"Updated {len(results['documents'])} tweets...")
-        print("------------------------------------------------")
+        logging.info(f"Updated {len(results['documents'])} tweets...")
+        logging.info("------------------------------------------------")
 
         offset += limit
         time.sleep(5)

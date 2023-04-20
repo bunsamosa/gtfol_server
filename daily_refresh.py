@@ -1,3 +1,4 @@
+import logging
 import os
 
 from appwrite.client import Client
@@ -35,5 +36,14 @@ context = {
 }
 databases = Databases(appwrite)
 
+# setup logging
+log_file_path = os.path.join(os.getcwd(), "log_refresh.log")
+logging.basicConfig(
+    filename=log_file_path,
+    filemode="w",
+    format="%(asctime)s - %(message)s",
+    datefmt="%d-%b-%y %H:%M:%S",
+    level=logging.INFO,
+)
 # update tweets
 update_tweets(db=databases, context=context, max_tweets=100000)

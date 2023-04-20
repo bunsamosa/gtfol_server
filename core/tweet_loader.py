@@ -1,3 +1,4 @@
+import logging
 import time
 
 from appwrite.services.databases import Databases
@@ -24,8 +25,8 @@ def load_tweets(
     :param context: context dictionary
     :param max_tweets: maximum number of tweets to scrape
     """
-    print("------------------------------------------------")
-    print(f"Starting scraper for {keyword}")
+    logging.info("------------------------------------------------")
+    logging.info(f"Starting scraper for {keyword}")
     total_scraped = 0
     total_errors = 0
     total_inserted = 0
@@ -47,15 +48,16 @@ def load_tweets(
     # run until max tweets reached or no more results
     while results:
         page_number += 1
-        print(f"Scraping page {page_number}...")
+        logging.info(f"Scraping page {page_number}...")
 
         # upload to database
         for tweet in results:
             total_scraped += 1
-            print(f"Processing tweet {total_scraped}...")
-            upload_data = prep_tweet_data(tweet)
+            logging.info(f"Processing tweet {total_scraped}...")
+            upload_data = prep_tweet_data(tweet=tweet)
 
-            # ignore retweets, replies, quoted tweets, and possibly sensitive tweets
+            # ignore retweets, replies, quoted tweets,
+            # and possibly sensitive tweets
             if (
                 tweet.is_retweet
                 or tweet.is_quoted
@@ -86,33 +88,33 @@ def load_tweets(
                     total_inserted += 1
             except Exception as e:
                 total_errors += 1
-                print("------------------------------------------------")
-                print(upload_data)
-                print(e)
-                print("------------------------------------------------")
+                logging.info("-----------------------------------------------")
+                logging.info(upload_data)
+                logging.info(e)
+                logging.info("-----------------------------------------------")
 
-        print("------------------------------------------------")
-        print(f"Page {page_number} scraped.")
-        print(f"Total scraped: {total_scraped}")
-        print(f"Total inserted: {total_inserted}")
-        print(f"Total updated: {total_updated}")
-        print(f"Total ignored: {total_ignored}")
-        print(f"Total errors: {total_errors}")
-        print(f"Do we have next page: {results_cursor.is_next_page}")
-        print("------------------------------------------------")
+        logging.info("------------------------------------------------")
+        logging.info(f"Page {page_number} scraped.")
+        logging.info(f"Total scraped: {total_scraped}")
+        logging.info(f"Total inserted: {total_inserted}")
+        logging.info(f"Total updated: {total_updated}")
+        logging.info(f"Total ignored: {total_ignored}")
+        logging.info(f"Total errors: {total_errors}")
+        logging.info(f"Do we have next page: {results_cursor.is_next_page}")
+        logging.info("------------------------------------------------")
 
         # check if max tweets reached
         if total_scraped >= max_tweets:
-            print("------------------------------------------------")
-            print(f"Max tweets reached: {max_tweets}")
-            print("------------------------------------------------")
+            logging.info("------------------------------------------------")
+            logging.info(f"Max tweets reached: {max_tweets}")
+            logging.info("------------------------------------------------")
             break
 
         # check if next page exists
         if not results_cursor.is_next_page:
-            print("------------------------------------------------")
-            print("No more results.")
-            print("------------------------------------------------")
+            logging.info("------------------------------------------------")
+            logging.info("No more results.")
+            logging.info("------------------------------------------------")
             break
 
         # get next page of results
@@ -121,12 +123,14 @@ def load_tweets(
         retries = 0
         time_sleep = 5
         while not results:
-            print(f"Fetching next page, retries: {retries}")
+            logging.info(f"Fetching next page, retries: {retries}")
             try:
                 retries += 1
                 time.sleep(time_sleep)
                 results = results_cursor.get_next_page()
             except Exception:
-                print(f"Error fetching, retrying in {time_sleep} seconds...")
+                logging.info(
+                    f"Error fetching, retrying in {time_sleep} seconds...",
+                )
                 if exponential_backoff:
                     time_sleep *= 2
