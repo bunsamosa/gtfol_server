@@ -64,13 +64,6 @@ TWEETS_ATTRIBUTES = {
         "default": None,
         "array": False,
     },
-    "vibe": {
-        "type": "string",
-        "size": 10,
-        "required": False,
-        "default": None,
-        "array": False,
-    },
     "place": {
         "type": "string",
         "size": 1000,
