@@ -60,7 +60,7 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
 
     app = Twitter()
     # fetch and update tweets
-    while limit <= max_tweets:
+    while offset <= max_tweets:
         print(f"Updating tweets {offset} to {offset + limit}...")
 
         # fetch results from database
