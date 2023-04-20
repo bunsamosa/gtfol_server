@@ -13,6 +13,7 @@ def load_tweets(
     search_filter: str,
     db: Databases,
     context: dict,
+    exponential_backoff: bool = False,
     max_tweets: int = 100000,
 ) -> None:
     """
@@ -118,11 +119,14 @@ def load_tweets(
         # retry if error fetching next page
         results = False
         retries = 0
+        time_sleep = 5
         while not results:
             print(f"Fetching next page, retries: {retries}")
             try:
                 retries += 1
-                time.sleep(5)
+                time.sleep(time_sleep)
                 results = results_cursor.get_next_page()
             except Exception:
-                print(f"Error fetching next page, retrying...{retries}")
+                print(f"Error fetching, retrying in {time_sleep} seconds...")
+                if exponential_backoff:
+                    time_sleep *= 2

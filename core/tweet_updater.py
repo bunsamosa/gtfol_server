@@ -63,6 +63,7 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
     while limit <= max_tweets:
         print(f"Updating tweets {offset} to {offset + limit}...")
 
+        # fetch results from database
         results = db.list_documents(
             database_id=context["database_id"],
             collection_id=context["collection_id"],
@@ -72,7 +73,12 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
                 Query.offset(offset),
             ],
         )
+        results_len = len(results["documents"])
+        if results_len == 0:
+            print("No more tweets to update...")
+            break
 
+        # update tweet data
         err_count = update_data(
             app=app,
             db=db,
@@ -80,9 +86,12 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
             context=context,
         )
 
+        # retry if too many errors
+        time_sleep = 5
         while err_count > 5:
-            print(f"Too many errors {err_count}, Retrying ...")
-            time.sleep(5)
+            print(f"Too many errors {err_count}, Retrying in {time_sleep}...")
+            time.sleep(time_sleep)
+
             app = Twitter()
             err_count = update_data(
                 app=app,
@@ -90,6 +99,10 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
                 results=results,
                 context=context,
             )
+
+            # exponential backoff
+            time_sleep *= 2
+
         print(f"Updated {len(results['documents'])} tweets...")
         print("------------------------------------------------")
 
