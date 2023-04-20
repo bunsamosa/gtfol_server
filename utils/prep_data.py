@@ -3,6 +3,7 @@ from typing import Dict
 from tweety import types
 
 from dbsetup.tweets import TWEETS_ATTRIBUTES
+from utils.score_calculator import calculate_score
 
 
 def prep_tweet_data(tweet: types.Tweet) -> Dict:
@@ -45,5 +46,15 @@ def prep_tweet_data(tweet: types.Tweet) -> Dict:
                 value = place["full_name"]
 
         response[key] = value
+
+    # calculate score
+    response["score"] = calculate_score(
+        likes=response["likes"],
+        comments=response["reply_counts"],
+        retweets=response["retweet_counts"] + response["quote_counts"],
+    )
+
+    # fetch user id
+    response["user_id"] = tweet.author.rest_id
 
     return response

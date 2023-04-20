@@ -99,6 +99,22 @@ TWEETS_ATTRIBUTES = {
         "default": None,
         "array": True,
     },
+    "score": {
+        "type": "integer",
+        "required": True,
+        "min": 0,
+        "max": 100000000000,
+        "default": 0,
+        "array": False,
+    },
+    "user_id": {
+        "type": "integer",
+        "required": True,
+        "min": 0,
+        "max": 10000000000000000000000,
+        "default": 0,
+        "array": False,
+    },
 }
 
 
