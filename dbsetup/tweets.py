@@ -108,11 +108,10 @@ TWEETS_ATTRIBUTES = {
         "array": False,
     },
     "user_id": {
-        "type": "integer",
+        "type": "string",
+        "size": 100,
         "required": True,
-        "min": 0,
-        "max": 10000000000000000000000,
-        "default": 0,
+        "default": None,
         "array": False,
     },
 }

@@ -55,6 +55,6 @@ def prep_tweet_data(tweet: types.Tweet) -> Dict:
     )
 
     # fetch user id
-    response["user_id"] = tweet.author.rest_id
+    response["user_id"] = str(tweet.author.rest_id)
 
     return response
