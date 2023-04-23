@@ -49,16 +49,8 @@ logging.basicConfig(
 
 # scrape data
 load_tweets(
-    keyword="@_buildspace",
-    search_filter=filters.SearchFilters.Latest(),
-    db=databases,
-    context=context,
-    max_tweets=500,
-)
-
-# scrape data
-load_tweets(
-    keyword="@_nightsweekends",
+    query="(@_buildspace OR @_nightsweekends) -filter:nativeretweets -filter:retweets -filter:quote -filter:replies",
+    keywords=["@_buildspace", "@_nightsweekends"],
     search_filter=filters.SearchFilters.Latest(),
     db=databases,
     context=context,

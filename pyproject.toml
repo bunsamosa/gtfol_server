@@ -9,6 +9,7 @@ python = "^3.9.10"
 tweety-ns = "^0.6.1"
 appwrite = "^2.0.0"
 wget = "^3.2"
+httpx = {extras = ["http2"], version = "^0.24.0"}
 
 [tool.poetry.dev-dependencies]
 isort = "^5.12.0"

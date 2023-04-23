@@ -197,6 +197,26 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "h2"
+version = "4.1.0"
+description = "HTTP/2 State-Machine based protocol implementation"
+category = "main"
+optional = false
+python-versions = ">=3.6.1"
+
+[package.dependencies]
+hpack = ">=4.0,<5"
+hyperframe = ">=6.0,<7"
+
+[[package]]
+name = "hpack"
+version = "4.0.0"
+description = "Pure-Python HPACK header compression"
+category = "main"
+optional = false
+python-versions = ">=3.6.1"
+
+[[package]]
 name = "httpcore"
 version = "0.17.0"
 description = "A minimal low-level HTTP client."
@@ -224,6 +244,7 @@ python-versions = ">=3.7"
 
 [package.dependencies]
 certifi = "*"
+h2 = {version = ">=3,<5", optional = true, markers = "extra == \"http2\""}
 httpcore = ">=0.15.0,<0.18.0"
 idna = "*"
 sniffio = "*"
@@ -233,6 +254,14 @@ brotli = ["brotli", "brotlicffi"]
 cli = ["click (>=8.0.0,<9.0.0)", "pygments (>=2.0.0,<3.0.0)", "rich (>=10,<14)"]
 http2 = ["h2 (>=3,<5)"]
 socks = ["socksio (>=1.0.0,<2.0.0)"]
+
+[[package]]
+name = "hyperframe"
+version = "6.0.1"
+description = "HTTP/2 framing layer for Python"
+category = "main"
+optional = false
+python-versions = ">=3.6.1"
 
 [[package]]
 name = "identify"
@@ -512,7 +541,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "virtualenv"
-version = "20.21.0"
+version = "20.22.0"
 description = "Virtual Python Environment builder"
 category = "dev"
 optional = false
@@ -520,12 +549,12 @@ python-versions = ">=3.7"
 
 [package.dependencies]
 distlib = ">=0.3.6,<1"
-filelock = ">=3.4.1,<4"
-platformdirs = ">=2.4,<4"
+filelock = ">=3.11,<4"
+platformdirs = ">=3.2,<4"
 
 [package.extras]
-docs = ["furo (>=2022.12.7)", "proselint (>=0.13)", "sphinx-argparse (>=0.4)", "sphinx (>=6.1.3)", "sphinxcontrib-towncrier (>=0.2.1a0)", "towncrier (>=22.12)"]
-test = ["covdefaults (>=2.2.2)", "coverage-enable-subprocess (>=1)", "coverage (>=7.1)", "flaky (>=3.7)", "packaging (>=23)", "pytest-env (>=0.8.1)", "pytest-freezegun (>=0.4.2)", "pytest-mock (>=3.10)", "pytest-randomly (>=3.12)", "pytest-timeout (>=2.1)", "pytest (>=7.2.1)"]
+docs = ["furo (>=2023.3.27)", "proselint (>=0.13)", "sphinx-argparse (>=0.4)", "sphinx (>=6.1.3)", "sphinxcontrib-towncrier (>=0.2.1a0)", "towncrier (>=22.12)"]
+test = ["covdefaults (>=2.3)", "coverage-enable-subprocess (>=1)", "coverage (>=7.2.3)", "flaky (>=3.7)", "packaging (>=23.1)", "pytest-env (>=0.8.1)", "pytest-freezegun (>=0.4.2)", "pytest-mock (>=3.10)", "pytest-randomly (>=3.12)", "pytest-timeout (>=2.1)", "pytest (>=7.3.1)"]
 
 [[package]]
 name = "wget"
@@ -546,7 +575,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9.10"
-content-hash = "aac5a8fd492f3123743519098fa98738c302ef8eaf8eb88c472a9c0edf473b0f"
+content-hash = "9b4ffdbe8094561d3465fe7ac24620f7ddd901dbe8a187e4ff1de6ffe97cd9da"
 
 [metadata.files]
 anyio = []
@@ -569,8 +598,11 @@ doppler-env = []
 et-xmlfile = []
 filelock = []
 h11 = []
+h2 = []
+hpack = []
 httpcore = []
 httpx = []
+hyperframe = []
 identify = []
 idna = []
 isort = []

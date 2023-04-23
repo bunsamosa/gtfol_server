@@ -10,7 +10,8 @@ from utils.prep_data import prep_tweet_data
 
 
 def load_tweets(
-    keyword: str,
+    query: str,
+    keywords: list[str],
     search_filter: str,
     db: Databases,
     context: dict,
@@ -26,7 +27,7 @@ def load_tweets(
     :param max_tweets: maximum number of tweets to scrape
     """
     logging.info("------------------------------------------------")
-    logging.info(f"Starting scraper for {keyword}")
+    logging.info(f"Starting scraper for {keywords}")
     total_scraped = 0
     total_errors = 0
     total_inserted = 0
@@ -40,7 +41,7 @@ def load_tweets(
 
     # search for tweets
     results_cursor = results = app.search(
-        keyword=keyword,
+        keyword=query,
         wait_time=5,
         filter_=search_filter,
     )
@@ -58,13 +59,7 @@ def load_tweets(
 
             # ignore retweets, replies, quoted tweets,
             # and possibly sensitive tweets
-            if (
-                tweet.is_retweet
-                or tweet.is_quoted
-                or tweet.is_reply
-                or tweet.is_possibly_sensitive
-                or keyword not in tweet.text
-            ):
+            if not any(word in tweet.text for word in keywords):
                 total_ignored += 1
                 continue
 
