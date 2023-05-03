@@ -6,7 +6,7 @@ from appwrite.services.databases import Databases
 from tweety.bot import Twitter
 
 from utils import docbuilder
-from utils.prep_data import prep_tweet_data
+from utils.prep_tweet_data import prep_tweet_data
 
 
 def update_data(app, db: Databases, results: list, context: dict) -> int:

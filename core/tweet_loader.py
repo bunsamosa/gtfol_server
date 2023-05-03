@@ -4,9 +4,10 @@ import time
 from appwrite.services.databases import Databases
 from tweety.bot import Twitter
 
-from dbsetup import tweets
+from dbsetup.common import setup_collection
+from dbsetup.tweets import TWEETS_ATTRIBUTES
 from utils import docbuilder
-from utils.prep_data import prep_tweet_data
+from utils.prep_tweet_data import prep_tweet_data
 
 
 def load_tweets(
@@ -37,7 +38,7 @@ def load_tweets(
 
     # setup collection
     app = Twitter()
-    tweets.setup_collection(db, context)
+    setup_collection(attributes=TWEETS_ATTRIBUTES, db=db, context=context)
 
     # search for tweets
     results_cursor = results = app.search(
