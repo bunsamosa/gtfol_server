@@ -62,6 +62,29 @@ def create_attribute(
                 array=metadata["array"],
             )
 
+    elif attr_type == "float":
+        if metadata["required"] or metadata["array"]:
+            return db.create_float_attribute(
+                database_id=context["database_id"],
+                collection_id=context["collection_id"],
+                key=attribute,
+                required=metadata["required"],
+                min=metadata["min"],
+                max=metadata["max"],
+                array=metadata["array"],
+            )
+        else:
+            return db.create_float_attribute(
+                database_id=context["database_id"],
+                collection_id=context["collection_id"],
+                key=attribute,
+                required=metadata["required"],
+                min=metadata["min"],
+                max=metadata["max"],
+                default=metadata["default"],
+                array=metadata["array"],
+            )
+
     elif attr_type == "boolean":
         if metadata["required"] or metadata["array"]:
             return db.create_boolean_attribute(
