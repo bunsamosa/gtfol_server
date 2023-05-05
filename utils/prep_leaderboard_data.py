@@ -17,6 +17,7 @@ def prep_data(row: Dict) -> Optional[Dict]:
     response_data = {"twitter_connected": False}
 
     # check if the demo video is a tweet
+    search_text = ""
     demo_url = row["demo_video"]
     is_tweet = re.search(TWEET_URL_REGEX, demo_url)
     is_url = re.search(GENERIC_URL_REGEX, demo_url)
@@ -36,17 +37,25 @@ def prep_data(row: Dict) -> Optional[Dict]:
             app = Twitter()
             demo_tweet = app.tweet_detail(identifier=tweet_id)
             tweet_author = demo_tweet.author
-            response_data["twitter_user_id"] = tweet_author.id
+            response_data["twitter_user_id"] = tweet_author.rest_id
             response_data["twitter_handle"] = tweet_author.username
             response_data["twitter_user_name"] = tweet_author.name
             response_data["twitter_connected"] = True
+            search_text = f"{tweet_author.username} {tweet_author.name}"
         except Exception as e:
             logging.error(f"Error fetching demo tweet: {e}")
 
     # parse row data
     try:
-        response_data["project_name"] = row["project name"]
-        response_data["project_description"] = row["what's your one-liner?"]
+        response_data["project_name"] = row["project name"].strip()
+        response_data["project_description"] = row[
+            "what's your one-liner?"
+        ].strip()
+
+        search_text = f'{search_text}\
+            {response_data["project_namef"]}\
+                {response_data["project_description"]}'
+        response_data["search_text"] = search_text
 
         # parse short url
         short_url = row.get("drop a link to your shorts launch post.", None)
@@ -61,6 +70,7 @@ def prep_data(row: Dict) -> Optional[Dict]:
         response_data["project_demo_url"] = demo_url
         response_data["points"] = row["points"]
         response_data["house"] = row["house"]
+        response_data["rank"] = row["rank"]
 
         # parse the metric
         current_metric = row["what's the main thing you're focusing on rn?"]
