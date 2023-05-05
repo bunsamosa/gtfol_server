@@ -35,7 +35,7 @@ LEADERBOARD_ATTRIBUTES = {
     },
     "project_description": {
         "type": "string",
-        "size": 2000,
+        "size": 5000,
         "required": True,
         "default": None,
         "array": False,
@@ -63,6 +63,14 @@ LEADERBOARD_ATTRIBUTES = {
     },
     "points": {
         "type": "float",
+        "required": True,
+        "min": 0,
+        "max": 100000000,
+        "default": 0,
+        "array": False,
+    },
+    "rank": {
+        "type": "integer",
         "required": True,
         "min": 0,
         "max": 100000000,
@@ -105,6 +113,13 @@ LEADERBOARD_ATTRIBUTES = {
         "min": -100000000,
         "max": 100000000,
         "default": 0,
+        "array": False,
+    },
+    "search_text": {
+        "type": "string",
+        "size": 5000,
+        "required": True,
+        "default": None,
         "array": False,
     },
 }

@@ -83,20 +83,32 @@ async def update_leaderboard(
     # fetch leader board
     leaderboard_data = await load_leaderboard(url=url, token=token)
 
+    # ignore unverified data and sort by points
+    leaderboard_data = [
+        ele for ele in leaderboard_data if ele["fields"].get("verified", False)
+    ]
+    leaderboard_data = sorted(
+        leaderboard_data,
+        key=lambda x: x["fields"]["points"],
+        reverse=True,
+    )
+
     total_rows = len(leaderboard_data)
     total_errors = 0
     total_inserted = 0
     total_ignored = 0
     total_updated = 0
+    houses = {}
 
-    for ele in leaderboard_data:
+    for rank, ele in enumerate(leaderboard_data):
         row_data = ele["fields"]
         row_id = ele["id"]
+        row_data["rank"] = rank + 1
 
-        # only process verified data
-        if not row_data.get("verified", False):
-            total_ignored += 1
-            continue
+        # calculate sum of score for all houses
+        house = row_data["house"]
+        points = row_data["points"]
+        houses[house] = houses.get(house, 0) + points
 
         processed_data = prep_data(row=row_data)
         if not processed_data:
@@ -129,6 +141,15 @@ async def update_leaderboard(
             logging.info(e)
             logging.info("-----------------------------------------------")
 
+    # Update house points
+    points_context = context["points_context"]
+    for house, points in houses.items():
+        docbuilder.create_document(
+            db=db,
+            data={"house": house, "points": points},
+            document_id=house,
+            context=points_context,
+        )
     logging.info("------------------------------------------------")
     logging.info(f"Total rows: {total_rows}")
     logging.info(f"Total inserted: {total_inserted}")
