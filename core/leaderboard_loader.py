@@ -144,7 +144,7 @@ async def update_leaderboard(
     # Update house points
     points_context = context["points_context"]
     for house, points in houses.items():
-        docbuilder.create_document(
+        docbuilder.update_document(
             db=db,
             data={"house": house, "points": points},
             document_id=house,

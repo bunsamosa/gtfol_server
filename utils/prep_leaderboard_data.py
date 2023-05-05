@@ -52,9 +52,7 @@ def prep_data(row: Dict) -> Optional[Dict]:
             "what's your one-liner?"
         ].strip()
 
-        search_text = f'{search_text}\
-            {response_data["project_namef"]}\
-                {response_data["project_description"]}'
+        search_text = f'{search_text} {response_data["project_name"]} {response_data["project_description"]}'
         response_data["search_text"] = search_text
 
         # parse short url
