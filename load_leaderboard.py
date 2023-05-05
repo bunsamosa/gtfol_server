@@ -5,6 +5,7 @@ import os
 from appwrite.client import Client
 from appwrite.services.databases import Databases
 
+from core.house_points import setup
 from core.leaderboard_loader import update_leaderboard
 
 # read environment variables
@@ -34,10 +35,17 @@ appwrite.set_endpoint(appwrite_endpoint).set_project(appwrite_project).set_key(
 )
 
 # setup collections
+points_collection_context = {
+    "database_id": appwrite_database_id,
+    "collection_id": "buildspace_house_points",
+    "collection_name": "buildspace house points",
+}
+
 context = {
     "database_id": appwrite_database_id,
     "collection_id": "buildspace_leaderboard",
     "collection_name": "buildspace leaderboard",
+    "points_context": points_collection_context,
 }
 databases = Databases(appwrite)
 
@@ -50,6 +58,9 @@ logging.basicConfig(
     datefmt="%d-%b-%y %H:%M:%S",
     level=logging.INFO,
 )
+
+# setup points collection
+setup(db=databases, context=points_collection_context)
 
 # scrape data
 asyncio.run(
