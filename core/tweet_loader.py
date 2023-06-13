@@ -37,7 +37,7 @@ def load_tweets(
     page_number = 0
 
     # setup collection
-    app = Twitter()
+    app = Twitter(cookies=context["twitter_cookie"])
     setup_collection(attributes=TWEETS_ATTRIBUTES, db=db, context=context)
 
     # search for tweets

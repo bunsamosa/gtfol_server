@@ -12,6 +12,7 @@ appwrite_endpoint = os.getenv("APPWRITE_ENDPOINT")
 appwrite_project = os.getenv("APPWRITE_PROJECT")
 appwrite_api_key = os.getenv("APPWRITE_API_KEY")
 appwrite_database_id = os.getenv("APPWRITE_DATABASE_ID")
+twitter_cookie = os.getenv("TWITTER_COOKIE")
 
 if not all(
     (
@@ -19,6 +20,7 @@ if not all(
         appwrite_project,
         appwrite_api_key,
         appwrite_database_id,
+        twitter_cookie,
     ),
 ):
     raise ValueError("Missing environment variables.")
@@ -34,6 +36,7 @@ context = {
     "database_id": appwrite_database_id,
     "collection_id": "tweets",
     "collection_name": "tweets",
+    "twitter_cookie": twitter_cookie,
 }
 databases = Databases(appwrite)
 
