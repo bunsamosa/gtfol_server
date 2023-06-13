@@ -114,11 +114,11 @@ def load_tweets(
             break
 
         # get next page of results
-        # retry if error fetching next page
+        # retry if error fetching next page - max 20 retries
         results = False
         retries = 0
         time_sleep = 5
-        while not results:
+        while not results and retries < 20:
             logging.info(f"Fetching next page, retries: {retries}")
             logging.info(f"Wait time: {time_sleep} seconds")
             try:
