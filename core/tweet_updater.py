@@ -3,7 +3,7 @@ import time
 
 from appwrite.query import Query
 from appwrite.services.databases import Databases
-from tweety.bot import Twitter
+from tweety import Twitter
 
 from utils import docbuilder
 from utils.prep_tweet_data import prep_tweet_data
@@ -59,7 +59,8 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
     if max_tweets < limit:
         limit = max_tweets
 
-    app = Twitter(context["twitter_cookie"])
+    app = Twitter("session")
+    app.load_cookies(context["twitter_cookie"])
     # fetch and update tweets
     while offset <= max_tweets:
         logging.info(f"Updating tweets {offset} to {offset + limit}...")
@@ -95,7 +96,8 @@ def update_tweets(db: Databases, context: dict, max_tweets=1000) -> None:
             )
             time.sleep(time_sleep)
 
-            app = Twitter(cookies=context["twitter_cookie"])
+            app = Twitter("session")
+            app.load_cookies(context["twitter_cookie"])
             err_count = update_data(
                 app=app,
                 db=db,

@@ -2,7 +2,7 @@ import logging
 import time
 
 from appwrite.services.databases import Databases
-from tweety.bot import Twitter
+from tweety import Twitter
 
 from dbsetup.common import setup_collection
 from dbsetup.tweets import TWEETS_ATTRIBUTES
@@ -37,7 +37,8 @@ def load_tweets(
     page_number = 0
 
     # setup collection
-    app = Twitter(cookies=context["twitter_cookie"])
+    app = Twitter("session")
+    app.load_cookies(context["twitter_cookie"])
     setup_collection(attributes=TWEETS_ATTRIBUTES, db=db, context=context)
 
     # search for tweets
