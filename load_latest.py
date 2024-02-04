@@ -58,4 +58,5 @@ load_tweets(
     db=databases,
     context=context,
     max_tweets=500,
+    time_sleep=15,
 )

@@ -16,16 +16,20 @@ def load_tweets(
     search_filter: str,
     db: Databases,
     context: dict,
-    exponential_backoff: bool = False,
     max_tweets: int = 100000,
+    exponential_backoff: bool = False,
+    time_sleep: int = 5,
 ) -> None:
     """
     Scrape tweets from twitter and upload to appwrite database.
-    :param keyword: keyword to search for
+    :param query: twitter search query
+    :param keywords: a list of keywords to look for in the tweets
     :param search_filter: filter to apply to search
     :param db: appwrite database instance
     :param context: context dictionary
     :param max_tweets: maximum number of tweets to scrape
+    :param exponential_backoff: whether to use exponential backoff
+    :param time_sleep: time to sleep between retries
     """
     logging.info("------------------------------------------------")
     logging.info(f"Starting scraper for {keywords}")

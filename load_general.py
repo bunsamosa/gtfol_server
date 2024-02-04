@@ -3,7 +3,6 @@ import os
 
 from appwrite.client import Client
 from appwrite.services.databases import Databases
-from tweety import filters
 
 from core.tweet_loader import load_tweets
 
@@ -54,7 +53,7 @@ logging.basicConfig(
 load_tweets(
     query="(@_buildspace OR @_nightsweekends) -filter:nativeretweets -filter:retweets -filter:quote -filter:replies",
     keywords=["@_buildspace", "@_nightsweekends"],
-    search_filter=filters.SearchFilters.Latest(),
+    search_filter=None,
     db=databases,
     context=context,
     exponential_backoff=True,
