@@ -57,6 +57,6 @@ load_tweets(
     search_filter=filters.SearchFilters.Latest(),
     db=databases,
     context=context,
-    max_tweets=500,
+    max_tweets=100,
     time_sleep=15,
 )
