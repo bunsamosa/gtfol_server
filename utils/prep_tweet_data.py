@@ -12,9 +12,11 @@ def prep_tweet_data(tweet: types.Tweet) -> Dict:
     :param tweet: tweety tweet object.
     :return: dict of tweet data.
     """
-    response = {}
+    response = {
+        "tweet_id": int(tweet.id),
+    }
     for key, metadata in TWEETS_ATTRIBUTES.items():
-        value = tweet.__dict__.get(key, None)
+        value = tweet.__dict__.get(key)
 
         # if value is None, set it to the default value
         if value is None:
@@ -41,7 +43,7 @@ def prep_tweet_data(tweet: types.Tweet) -> Dict:
 
         # parse place
         if key == "place":
-            place = tweet.__dict__.get("place", None)
+            place = tweet.__dict__.get("place")
             if place:
                 value = place["full_name"]
 

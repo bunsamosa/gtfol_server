@@ -1,12 +1,9 @@
 import logging
 import time
+from typing import List
 
-from appwrite.services.databases import Databases
 from tweety import Twitter
 
-from dbsetup.common import setup_collection
-from dbsetup.tweets import TWEETS_ATTRIBUTES
-from utils import docbuilder
 from utils.prep_tweet_data import prep_tweet_data
 
 
@@ -14,41 +11,37 @@ def load_tweets(
     query: str,
     keywords: list[str],
     search_filter: str,
-    db: Databases,
     context: dict,
     max_tweets: int = 100000,
     exponential_backoff: bool = False,
     time_sleep: int = 5,
-) -> None:
+) -> List:
     """
-    Scrape tweets from twitter and upload to appwrite database.
+    Scrape tweets from twitter given a search query and keywords to look for.
     :param query: twitter search query
     :param keywords: a list of keywords to look for in the tweets
     :param search_filter: filter to apply to search
-    :param db: appwrite database instance
     :param context: context dictionary
     :param max_tweets: maximum number of tweets to scrape
     :param exponential_backoff: whether to use exponential backoff
     :param time_sleep: time to sleep between retries
+    :return: list of tweets
     """
     logging.info("------------------------------------------------")
     logging.info(f"Starting scraper for {keywords}")
     total_scraped = 0
-    total_errors = 0
-    total_inserted = 0
     total_ignored = 0
-    total_updated = 0
     page_number = 0
+    data_fetched = []
 
-    # setup collection
+    # setup twitter client
     app = Twitter("session")
     app.load_cookies(context["twitter_cookie"])
-    setup_collection(attributes=TWEETS_ATTRIBUTES, db=db, context=context)
 
     # search for tweets
     results_cursor = results = app.search(
         keyword=query,
-        wait_time=5,
+        wait_time=time_sleep,
         filter_=search_filter,
     )
 
@@ -57,11 +50,11 @@ def load_tweets(
         page_number += 1
         logging.info(f"Scraping page {page_number}...")
 
-        # upload to database
+        # process tweets
         for tweet in results:
             total_scraped += 1
             logging.info(f"Processing tweet {total_scraped}...")
-            upload_data = prep_tweet_data(tweet=tweet)
+            json_data = prep_tweet_data(tweet=tweet)
 
             # ignore retweets, replies, quoted tweets,
             # and possibly sensitive tweets
@@ -69,38 +62,12 @@ def load_tweets(
                 total_ignored += 1
                 continue
 
-            # create a document if it doesn't exist, otherwise update it
-            try:
-                document_exists = docbuilder.create_document(
-                    db=db,
-                    data=upload_data,
-                    document_id=tweet.id,
-                    context=context,
-                )
-                if document_exists:
-                    docbuilder.update_document(
-                        db=db,
-                        data=upload_data,
-                        document_id=tweet.id,
-                        context=context,
-                    )
-                    total_updated += 1
-                else:
-                    total_inserted += 1
-            except Exception as e:
-                total_errors += 1
-                logging.info("-----------------------------------------------")
-                logging.info(upload_data)
-                logging.info(e)
-                logging.info("-----------------------------------------------")
+            data_fetched.append(json_data)
 
         logging.info("------------------------------------------------")
         logging.info(f"Page {page_number} scraped.")
         logging.info(f"Total scraped: {total_scraped}")
-        logging.info(f"Total inserted: {total_inserted}")
-        logging.info(f"Total updated: {total_updated}")
         logging.info(f"Total ignored: {total_ignored}")
-        logging.info(f"Total errors: {total_errors}")
         logging.info(f"Do we have next page: {results_cursor.is_next_page}")
         logging.info("------------------------------------------------")
 
@@ -122,7 +89,6 @@ def load_tweets(
         # retry if error fetching next page - max 20 retries
         results = False
         retries = 0
-        time_sleep = 5
         while not results and retries < 20:
             logging.info(f"Fetching next page, retries: {retries}")
             logging.info(f"Wait time: {time_sleep} seconds")
@@ -135,3 +101,5 @@ def load_tweets(
 
             if exponential_backoff and time_sleep < 300:
                 time_sleep += 10
+
+    return data_fetched
