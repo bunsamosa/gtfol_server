@@ -36,7 +36,7 @@ def build_insert_query(tweets: List, context: Dict) -> str:
     # build query
     insert_query = Query.into(table).columns(*data_columns)
     values_to_insert = [
-        (tweet[key] for key in data_columns) for tweet in tweets
+        [tweet[key] for key in data_columns] for tweet in tweets
     ]
     insert_query = insert_query.insert(*values_to_insert)
     sql_query = insert_query.get_sql()

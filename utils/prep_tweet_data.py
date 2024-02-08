@@ -47,7 +47,8 @@ def prep_tweet_data(tweet: types.Tweet) -> Dict:
             if place:
                 value = place["full_name"]
 
-        response[key] = value
+        meta_key = metadata.get("key", key)
+        response[meta_key] = value
 
     # calculate score
     response["score"] = calculate_score(

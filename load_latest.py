@@ -64,7 +64,7 @@ async def load_data():
 
     insert_query = build_insert_query(tweets=tweet_data, context=context)
     response = await conn.execute(insert_query)
-    logging.info(f"Inserted or Updated {response} tweets")
+    logging.info(f"Result: {response} tweets")
 
 
 if __name__ == "__main__":
