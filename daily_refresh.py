@@ -4,7 +4,7 @@ import os
 from appwrite.client import Client
 from appwrite.services.databases import Databases
 
-from core.tweet_updater import update_tweets
+from archive.tweet_updater import update_tweets
 
 # read environment variables
 appwrite_endpoint = os.getenv("APPWRITE_ENDPOINT")
