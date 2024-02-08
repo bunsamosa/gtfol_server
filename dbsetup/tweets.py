@@ -7,6 +7,7 @@ TWEETS_ATTRIBUTES = {
     },
     "text": {
         "type": "string",
+        "key": "tweet_text",
         "size": 500,
         "required": True,
         "default": None,
@@ -54,6 +55,7 @@ TWEETS_ATTRIBUTES = {
     },
     "language": {
         "type": "string",
+        "key": "tweet_language",
         "size": 10,
         "required": True,
         "default": None,

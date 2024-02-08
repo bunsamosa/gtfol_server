@@ -1,12 +1,12 @@
 CREATE TABLE tweets (
-    tweet_id BIGINT PRIMARY KEY,
+    tweet_id VARCHAR(100) PRIMARY KEY,
     created_on TIMESTAMP NOT NULL,
-    tweet_text VARCHAR(500) NOT NULL,
+    tweet_text TEXT NOT NULL,
     bookmark_count INTEGER NOT NULL CHECK (bookmark_count >= 0),
-    quote_count INTEGER NOT NULL CHECK (quote_count >= 0),
+    quote_counts INTEGER NOT NULL CHECK (quote_counts >= 0),
     likes INTEGER NOT NULL CHECK (likes >= 0),
-    reply_count INTEGER NOT NULL CHECK (reply_count >= 0),
-    retweet_count INTEGER NOT NULL CHECK (retweet_count >= 0),
+    reply_counts INTEGER NOT NULL CHECK (reply_counts >= 0),
+    retweet_counts INTEGER NOT NULL CHECK (retweet_counts >= 0),
     tweet_language VARCHAR(10) NOT NULL,
     place VARCHAR(1000),
     media TEXT[] DEFAULT ARRAY[]::TEXT[], -- Default empty array
