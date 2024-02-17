@@ -1,12 +1,38 @@
+import re
 from typing import Dict
 
+import httpx
 from tweety import types
 
 from dbsetup.tweets import TWEETS_ATTRIBUTES
 from utils.score_calculator import calculate_score
 
 
-def prep_tweet_data(tweet: types.Tweet) -> Dict:
+async def preprocess_text(text: str) -> str:
+    """
+    Preprocess tweet text to update URLs redirects
+    :return: preprocessed tweet text.
+    """
+    # find all URLs
+    urls = re.findall(r"http[s]?://t.co/\w+", text)
+
+    # replace URLs with their final destination
+    async with httpx.AsyncClient() as client:
+        for twitter_url in urls:
+            try:
+                response = await client.head(
+                    url=twitter_url,
+                    follow_redirects=True,
+                    timeout=30.0,
+                )
+                text = text.replace(twitter_url, str(response.url))
+            except Exception as exc:
+                del exc
+                text = text.replace(twitter_url, "<url>")
+    return text
+
+
+async def prep_tweet_data(tweet: types.Tweet) -> Dict:
     """
     Prepares the tweet data before uploading to the database.
     :param tweet: tweety tweet object.
@@ -49,6 +75,9 @@ def prep_tweet_data(tweet: types.Tweet) -> Dict:
 
         meta_key = metadata.get("key", key)
         response[meta_key] = value
+
+    # process tweet text
+    response["tweet_text"] = await preprocess_text(text=response["tweet_text"])
 
     # calculate score
     response["score"] = calculate_score(

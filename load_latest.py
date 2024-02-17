@@ -32,7 +32,7 @@ async def load_data():
     await conn.execute(f"SET search_path TO {context['postgres_schema']}")
 
     # read tweet data
-    tweet_data = load_tweets(
+    tweet_data = await load_tweets(
         query="(@_buildspace OR @_nightsweekends) -filter:nativeretweets -filter:retweets -filter:quote -filter:replies",
         keywords=["@_buildspace", "@_nightsweekends"],
         search_filter=filters.SearchFilters.Latest(),

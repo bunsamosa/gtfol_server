@@ -4,10 +4,10 @@ from typing import List
 
 from tweety import Twitter
 
-from utils.prep_tweet_data import prep_tweet_data
+from utils.processor import prep_tweet_data
 
 
-def load_tweets(
+async def load_tweets(
     query: str,
     keywords: list[str],
     search_filter: str,
@@ -54,7 +54,7 @@ def load_tweets(
         for tweet in results:
             total_scraped += 1
             logging.info(f"Processing tweet {total_scraped}...")
-            json_data = prep_tweet_data(tweet=tweet)
+            json_data = await prep_tweet_data(tweet=tweet)
 
             # ignore retweets, replies, quoted tweets,
             # and possibly sensitive tweets
