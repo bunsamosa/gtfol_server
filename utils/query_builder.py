@@ -31,7 +31,7 @@ def build_insert_query(tweets: List, context: Dict) -> str:
     :param context: Context object
     """
     # define tweets table
-    table = Table(context["collection_name"])
+    table = Table(context["tweets_db"])
 
     # build query
     insert_query = Query.into(table).columns(*data_columns)
