@@ -26,9 +26,8 @@ async def preprocess_text(text: str) -> str:
                     timeout=30.0,
                 )
                 text = text.replace(twitter_url, str(response.url))
-            except Exception as exc:
-                del exc
-                text = text.replace(twitter_url, "<url>")
+            except Exception:
+                continue
     return text
 
 
