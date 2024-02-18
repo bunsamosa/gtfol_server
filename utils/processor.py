@@ -7,10 +7,16 @@ from tweety import types
 from dbsetup.tweets import TWEETS_ATTRIBUTES
 from utils.score_calculator import calculate_score
 
+URL_REGEX = r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
+AMPERSAND_CHARS = {"&amp;amp;": "&", "&amp;": "&", "&gt;": ">", "&lt": "<"}
+AMPERSAND_REGEX = r"&(\w){2,};"
 
-async def preprocess_text(text: str) -> str:
+
+async def preprocess_tweet(text: str) -> str:
     """
-    Preprocess tweet text to update URLs redirects
+    Preprocess tweet text
+    - replace URL redirects with original URL
+    - replace ampersand characters with actuals
     :return: preprocessed tweet text.
     """
     # find all URLs
@@ -28,7 +34,33 @@ async def preprocess_text(text: str) -> str:
                 text = text.replace(twitter_url, str(response.url))
             except Exception:
                 continue
+
+    # replace ampersand characters
+    for key, value in AMPERSAND_CHARS.items():
+        text = text.replace(key, value)
+
     return text
+
+
+async def preprocess_embedding(text: str) -> str:
+    """
+    Preprocess tweet text before generating embeddings.
+    """
+    # remove attachment URLs
+    tweet_text = re.sub(
+        pattern=URL_REGEX + r"$",
+        repl="<ATTACHMENT URL>",
+        string=text,
+    )
+
+    # remove app or demo URLs
+    tweet_text = re.sub(
+        pattern=URL_REGEX,
+        repl="<APP or DEMO URL>",
+        string=tweet_text,
+    )
+
+    return tweet_text
 
 
 async def prep_tweet_data(tweet: types.Tweet) -> Dict:
@@ -75,8 +107,8 @@ async def prep_tweet_data(tweet: types.Tweet) -> Dict:
         meta_key = metadata.get("key", key)
         response[meta_key] = value
 
-    # process tweet text
-    response["tweet_text"] = await preprocess_text(text=response["tweet_text"])
+    # remove URL redirects
+    response["tweet_text"] = await preprocess_tweet(response["tweet_text"])
 
     # calculate score
     response["score"] = calculate_score(
