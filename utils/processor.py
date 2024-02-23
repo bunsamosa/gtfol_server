@@ -1,15 +1,14 @@
 import re
 from typing import Dict
 
+import emoji
 import httpx
 from tweety import types
 
 from dbsetup.tweets import TWEETS_ATTRIBUTES
+from utils.regex_patterns import AMPERSAND_CHARS
+from utils.regex_patterns import URL_REGEX
 from utils.score_calculator import calculate_score
-
-URL_REGEX = r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
-AMPERSAND_CHARS = {"&amp;amp;": "&", "&amp;": "&", "&gt;": ">", "&lt": "<"}
-AMPERSAND_REGEX = r"&(\w){2,};"
 
 
 async def preprocess_tweet(text: str) -> str:
@@ -46,19 +45,31 @@ async def preprocess_embedding(text: str) -> str:
     """
     Preprocess tweet text before generating embeddings.
     """
+    # convert to lowercase
+    tweet_text = text.lower()
+
     # remove attachment URLs
     tweet_text = re.sub(
         pattern=URL_REGEX + r"$",
-        repl="<ATTACHMENT URL>",
+        repl="[attachment_url]",
         string=text,
     )
 
     # remove app or demo URLs
     tweet_text = re.sub(
         pattern=URL_REGEX,
-        repl="<APP or DEMO URL>",
+        repl="[app_demo_url]",
         string=tweet_text,
     )
+
+    # replace multiple new lines with single new line
+    tweet_text = re.sub(r"\n+", "\n", tweet_text)
+
+    # replace multiple spaces with single space
+    tweet_text = re.sub(r" +", " ", tweet_text)
+
+    # remove emojis
+    tweet_text = emoji.replace_emoji(tweet_text, replace="")
 
     return tweet_text
 
