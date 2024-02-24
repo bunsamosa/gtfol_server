@@ -15,3 +15,9 @@ CREATE TABLE tweets (
     score BIGINT NOT NULL CHECK (score >= 0),
     user_id VARCHAR(100) NOT NULL
 );
+
+
+CREATE TABLE tweet_embeds (
+  tweet_id VARCHAR(100) PRIMARY KEY,
+  embedding vector(1536)
+);
