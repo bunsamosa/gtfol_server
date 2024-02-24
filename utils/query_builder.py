@@ -2,7 +2,8 @@ from typing import Dict
 from typing import List
 
 from pypika import PostgreSQLQuery as Query
-from pypika import Table
+
+from core.tables import tweets_table
 
 
 data_columns = (
@@ -30,11 +31,9 @@ def build_insert_query(tweets: List, context: Dict) -> str:
     :param tweets: List of tweet objects
     :param context: Context object
     """
-    # define tweets table
-    table = Table(context["tweets_db"])
-
+    del context  # unused
     # build query
-    insert_query = Query.into(table).columns(*data_columns)
+    insert_query = Query.into(tweets_table).columns(*data_columns)
     values_to_insert = [
         [tweet[key] for key in data_columns] for tweet in tweets
     ]
