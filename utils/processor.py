@@ -52,7 +52,7 @@ async def preprocess_embedding(text: str) -> str:
     tweet_text = re.sub(
         pattern=URL_REGEX + r"$",
         repl="[attachment_url]",
-        string=text,
+        string=tweet_text,
     )
 
     # remove app or demo URLs
@@ -62,14 +62,14 @@ async def preprocess_embedding(text: str) -> str:
         string=tweet_text,
     )
 
+    # remove emojis
+    tweet_text = emoji.replace_emoji(tweet_text, replace="")
+
     # replace multiple new lines with single new line
     tweet_text = re.sub(r"\n+", "\n", tweet_text)
 
     # replace multiple spaces with single space
     tweet_text = re.sub(r" +", " ", tweet_text)
-
-    # remove emojis
-    tweet_text = emoji.replace_emoji(tweet_text, replace="")
 
     return tweet_text
 

@@ -1,3 +1,4 @@
+-- Table for storing tweet data
 CREATE TABLE tweets (
     tweet_id VARCHAR(100) PRIMARY KEY,
     created_on TIMESTAMP NOT NULL,
@@ -17,7 +18,30 @@ CREATE TABLE tweets (
 );
 
 
+-- Table for storing tweet embeddings
 CREATE TABLE tweet_embeds (
   tweet_id VARCHAR(100) PRIMARY KEY,
   embedding vector(1536)
 );
+
+
+-- Function for fetching tweets
+CREATE OR REPLACE FUNCTION match_tweets (
+  query_embedding vector(1536),
+  match_threshold FLOAT,
+  match_count INT
+)
+RETURNS TABLE (
+  tweet_id VARCHAR(100),
+  similarity FLOAT
+)
+LANGUAGE SQL stable
+AS $$
+  SELECT
+    t1.tweet_id,
+    1 - (t1.embedding <=> query_embedding) AS similarity
+  FROM gtfol.tweet_embeds t1
+  WHERE 1 - (t1.embedding <=> query_embedding) > match_threshold
+  ORDER BY (t1.embedding <=> query_embedding) ASC
+  LIMIT match_count;
+$$;

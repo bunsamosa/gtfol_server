@@ -38,7 +38,7 @@ async def generate_embeddings():
     # load all tweets from DB
     query = (
         Query.from_(tweets_table)
-        .select(["tweet_id", "tweet_text"])
+        .select("tweet_id", "tweet_text")
         .where(
             tweets_table.field("tweet_id").notin(
                 tweet_embeds_table.select("tweet_id"),
@@ -74,18 +74,18 @@ async def generate_embeddings():
         vector = embedding.data[0].embedding
         insert_values.append((tweet_id, vector))
 
-        if len(insert_values) >= 100:
-            insert_query = insert_query.insert(*insert_values)
-            insert_query = insert_query.get_sql()
-            response = await conn.execute(insert_query)
+        if len(insert_values) >= 10:
+            query = insert_query.insert(*insert_values)
+            query = query.get_sql()
+            response = await conn.execute(query)
             logging.info(f"Inserted {response} tweet embeddings")
             insert_values = []
 
     # insert remaining values
     if insert_values:
-        insert_query = insert_query.insert(*insert_values)
-        insert_query = insert_query.get_sql()
-        response = await conn.execute(insert_query)
+        query = insert_query.insert(*insert_values)
+        query = query.get_sql()
+        response = await conn.execute(query)
         logging.info(f"Inserted {response} tweet embeddings")
 
     await conn.close()
