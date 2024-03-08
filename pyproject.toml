@@ -6,7 +6,7 @@ authors = ["madhukar01 <mholla8@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9.10"
-appwrite = "^2.0.0"
+appwrite = "^3.0.0"
 wget = "^3.2"
 httpx = {extras = ["http2"], version = "^0.24.0"}
 tweety-ns = "^1.0.9.4"
