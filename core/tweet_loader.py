@@ -36,7 +36,14 @@ async def load_tweets(
 
     # setup twitter client
     app = Twitter("session")
-    app.load_cookies(context["twitter_cookie"])
+
+    try:
+        app.load_cookies(context["twitter_cookie"])
+    except Exception as exc:
+        logging.error("Unable to login from session")
+        logging.error(exc)
+        logging.info("Signing in with password")
+        app.sign_in(context["twitter_username"], context["twitter_pwd"])
 
     # search for tweets
     results_cursor = results = app.search(

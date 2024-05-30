@@ -1276,13 +1276,13 @@ telegram = ["requests"]
 
 [[package]]
 name = "tweety-ns"
-version = "1.0.9.4"
+version = "1.1.5"
 description = "An easy Twitter Scraper"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "tweety-ns-1.0.9.4.tar.gz", hash = "sha256:a416f4e78b6a33b45d8fd924e52adfafe3211950a97201a9df7ae7f17eac1e19"},
-    {file = "tweety_ns-1.0.9.4-py3-none-any.whl", hash = "sha256:38de9213e3b6817f14df69151fb8346583201f2edb1fc29606472cd82c863115"},
+    {file = "tweety_ns-1.1.5-py3-none-any.whl", hash = "sha256:035661b7c1b9c4e16d37f27e170c6c98ab6405b81686aef3ebc1fe899b5f5b27"},
+    {file = "tweety_ns-1.1.5.tar.gz", hash = "sha256:6eb0f978d57794750999b95b04385b5f53b2c1a4a37306d00bf7d1810c801861"},
 ]
 
 [package.dependencies]

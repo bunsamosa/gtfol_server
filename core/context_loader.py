@@ -10,6 +10,8 @@ def load_context():
         "postgres_schema": "POSTGRES_SCHEMA",
         "twitter_cookie": "TWITTER_COOKIE",
         "tweets_db": "TWEETS_DB",
+        "twitter_username": "TWITTER_USERNAME",
+        "twitter_pwd": "TWITTER_PWD",
     }
 
     for key, env_var in context.items():
